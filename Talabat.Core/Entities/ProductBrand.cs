@@ -8,6 +8,6 @@ namespace Talabat.Core.Entities
 {
     public class ProductBrand : BaseEntity
     {
-        string Name { get; set; }
+        public string Name { get; set; }
     }
 }
