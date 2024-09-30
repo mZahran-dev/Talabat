@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
+    <ProjectReference Include="..\Talabat.Core\Talabat.Core.csproj" />
   </ItemGroup>
 
 </Project>
