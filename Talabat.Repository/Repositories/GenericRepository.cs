@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,10 @@ namespace Talabat.Repository.Repositories
 
         public async Task<T> GetAsync(int id)
         {
+            if(typeof(T) == typeof(Product))
+            {
+                return await _dbcontext.Set<Product>().Where(p => p.Id == id).Include(p => p.ProductBrand).Include(p => p.ProductCategory).FirstOrDefaultAsync() as T;
+            }
             return await _dbcontext.Set<T>().FindAsync(id);
         }
     }

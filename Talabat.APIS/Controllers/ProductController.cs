@@ -21,5 +21,16 @@ namespace Talabat.APIS.Controllers
             return Ok(product);// 200
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Product>> GetProductById(int id)
+        {
+            var product = await _repository.GetAsync(id);
+            if (product == null)
+            {
+                return NotFound(new {message = "Not Found", StatusCode = 404});  
+            }
+            return Ok(product);// 200
+        }
+
     }
 }
