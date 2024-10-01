@@ -1,6 +1,9 @@
 
 using Microsoft.EntityFrameworkCore;
+using Talabat.Core.Entities;
+using Talabat.Core.Repositories.Contract;
 using Talabat.Repository.Data;
+using Talabat.Repository.Repositories;
 
 namespace Talabat.APIS
 {
@@ -10,7 +13,8 @@ namespace Talabat.APIS
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+
+            #region Add dependency injection services to the container.
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -21,7 +25,16 @@ namespace Talabat.APIS
             );
             builder.Services.AddSwaggerGen();
 
+            //builder.Services.AddScoped<IGenericRepository<Product>, GenericRepository<Product>>();
+            //builder.Services.AddScoped<IGenericRepository<ProductBrand>, GenericRepository<ProductBrand>>();
+            //builder.Services.AddScoped<IGenericRepository<ProductCategory>, GenericRepository<ProductCategory>>();
+
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             var app = builder.Build();
+
+            #endregion
+
+
             // Update DataBase Automatically
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
