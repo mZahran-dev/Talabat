@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
+using Talabat.Core.Specifications;
 using Talabat.Repository.Data;
 
 namespace Talabat.Repository.Repositories
@@ -19,22 +20,40 @@ namespace Talabat.Repository.Repositories
         {
             _dbcontext = Dbcontext;
         }
-        public async Task<IEnumerable<T>> GetAllAsync()
+        //public async Task<IEnumerable<T>> GetAllAsync()
+        //{
+        //    // to solve this issue of condition => implement Specification design pattern
+        //    if(typeof(T) == typeof(Product))
+        //    {
+        //        return  (IEnumerable<T>) await _dbcontext.Set<Product>().Include(p => p.ProductBrand).Include(p => p.ProductCategory).ToListAsync();
+        //    }
+        //    return await _dbcontext.Set<T>().ToListAsync();
+        //}
+
+ 
+
+        //public async Task<T> GetAsync(int id)
+        //{
+        //    if (typeof(T) == typeof(Product))
+        //    {
+        //        return await _dbcontext.Set<Product>().Where(p => p.Id == id).Include(p => p.ProductBrand).Include(p => p.ProductCategory).FirstOrDefaultAsync() as T;
+        //    }
+        //    return await _dbcontext.Set<T>().FindAsync(id);
+        //}
+
+        //Get With specification
+        public async Task<IEnumerable<T>> GetAllSpecAsync(ISpecification<T> spec)
         {
-            if(typeof(T) == typeof(Product))
-            {
-                return  (IEnumerable<T>) await _dbcontext.Set<Product>().Include(p => p.ProductBrand).Include(p => p.ProductCategory).ToListAsync();
-            }
-            return await _dbcontext.Set<T>().ToListAsync();
+            return await ApplySpecification(spec).ToListAsync();
+        }
+        async Task<T> IGenericRepository<T>.GetByIdSpecAsync(ISpecification<T> spec)
+        {
+            return await ApplySpecification(spec).FirstOrDefaultAsync();
         }
 
-        public async Task<T> GetAsync(int id)
+        private IQueryable<T> ApplySpecification(ISpecification<T> spec)
         {
-            if(typeof(T) == typeof(Product))
-            {
-                return await _dbcontext.Set<Product>().Where(p => p.Id == id).Include(p => p.ProductBrand).Include(p => p.ProductCategory).FirstOrDefaultAsync() as T;
-            }
-            return await _dbcontext.Set<T>().FindAsync(id);
+            return SpecificationEvaluator<T>.GetQuery(_dbcontext.Set<T>(), spec);
         }
     }
 }
