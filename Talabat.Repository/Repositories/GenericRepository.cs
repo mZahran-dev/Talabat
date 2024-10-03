@@ -46,9 +46,9 @@ namespace Talabat.Repository.Repositories
         {
             return await SpecificationEvaluator<T>.GetQuery(_dbcontext.Set<T>(), spec).ToListAsync();
         }
-        //public async Task<IEnumerable<T>> IGenericRepository<T>.GetByIdSpecAsync(ISpecification<T> spec)
-        //{
-        //    return 
-        //}
+        async Task<IEnumerable<T>> IGenericRepository<T>.GetByIdSpecAsync(ISpecification<T> spec)
+        {
+            return await SpecificationEvaluator<T>.GetQuery(_dbcontext.Set<T>(), spec).ToListAsync();
+        }
     }
 }
