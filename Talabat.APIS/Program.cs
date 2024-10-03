@@ -31,7 +31,7 @@ namespace Talabat.APIS
             //builder.Services.AddScoped<IGenericRepository<ProductCategory>, GenericRepository<ProductCategory>>();
 
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            builder.Services.AddAutoMapper(M => M.AddProfile(typeof(MappingProfile)));
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
             var app = builder.Build();
 
             #endregion
@@ -64,7 +64,7 @@ namespace Talabat.APIS
 
             app.UseAuthorization();
 
-
+            app.UseStaticFiles();
             app.MapControllers();
 
             app.Run();
