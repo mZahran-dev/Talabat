@@ -20,7 +20,7 @@ namespace Talabat.APIS.Controllers
         {
             var spec = new ProductSpecifications();
             var product = await _repository.GetAllSpecAsync(spec);
-            return Ok(product);// 200
+            return Ok(product); // 200
         }
 
         [HttpGet("{id}")]

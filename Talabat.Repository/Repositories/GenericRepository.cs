@@ -29,6 +29,9 @@ namespace Talabat.Repository.Repositories
             }
             return await _dbcontext.Set<T>().ToListAsync();
         }
+
+ 
+
         public async Task<T> GetAsync(int id)
         {
             if (typeof(T) == typeof(Product))
@@ -43,12 +46,9 @@ namespace Talabat.Repository.Repositories
         {
             return await SpecificationEvaluator<T>.GetQuery(_dbcontext.Set<T>(), spec).ToListAsync();
         }
-
-       
-
-        public async Task<T> GetByIdSpecAsync(ISpecification<T> spec)
-        {
-            return await SpecificationEvaluator<T>.GetQuery(_dbcontext.Set<T>(), spec).FirstOrDefaultAsync();
-        }
+        //public async Task<IEnumerable<T>> IGenericRepository<T>.GetByIdSpecAsync(ISpecification<T> spec)
+        //{
+        //    return 
+        //}
     }
 }
