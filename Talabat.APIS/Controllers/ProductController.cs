@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Talabat.APIS.DTOs;
+using Talabat.APIS.Errors;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Specifications;
@@ -37,7 +38,7 @@ namespace Talabat.APIS.Controllers
 
             if (product == null)
             { 
-                return NotFound(new {message = "Not Found", StatusCode = 404});  
+                return NotFound(new ApiResponse(404));  
             }
             return Ok(_mapper.Map<Product,ProductDto>(product));  // 200
         }

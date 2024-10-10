@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Talabat.APIS.Errors;
 using Talabat.Repository.Data;
 
 namespace Talabat.APIS.Controllers
@@ -20,7 +21,7 @@ namespace Talabat.APIS.Controllers
             var product = _dbContext.Products.Find(200);
             if(product == null)
             {
-                return NotFound();
+                return NotFound(new ApiResponse(404));
             }
             return Ok(product);
         }
@@ -36,7 +37,13 @@ namespace Talabat.APIS.Controllers
         [HttpGet("badrequest")]
         public ActionResult GetBadRequest()
         {
-          return BadRequest();
+          return BadRequest(new ApiResponse(400));
+        }
+
+        [HttpGet("unauthorized")]
+        public ActionResult GetUnAuthorized()
+        {
+            return Unauthorized(new ApiResponse(401));
         }
 
         [HttpGet("badrequest/{id}")]
