@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Talabat.APIS.Errors;
 using Talabat.APIS.Helpers;
+using Talabat.APIS.Middlewares;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Repository.Data;
@@ -71,7 +72,7 @@ namespace Talabat.APIS
                 var logger = loggerFactory.CreateLogger<Program>();
                 logger.LogError(ex, "an error occured during Migration");
             }
-
+            app.UseMiddleware<ExceptionMiddleware>();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
