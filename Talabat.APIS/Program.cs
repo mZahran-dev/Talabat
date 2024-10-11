@@ -18,7 +18,6 @@ namespace Talabat.APIS
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
             #region Add dependency injection services to the container.
 
             builder.Services.AddControllers();
@@ -35,14 +34,14 @@ namespace Talabat.APIS
             //builder.Services.AddScoped<IGenericRepository<ProductCategory>, GenericRepository<ProductCategory>>();
 
             //ApplicationServicesExtensions.AddApplicationServices(builder.Services);
+            
             builder.Services.AddApplicationServices(); //Extension Method
-
             var app = builder.Build();
 
             #endregion
 
-
             // Update DataBase Automatically
+            #region Update Database 
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
             var _dbContext = services.GetRequiredService<StoreContext>();
@@ -57,11 +56,14 @@ namespace Talabat.APIS
                 var logger = loggerFactory.CreateLogger<Program>();
                 logger.LogError(ex, "an error occured during Migration");
             }
+            #endregion
+
+            #region Middlewares
             app.UseMiddleware<ExceptionMiddleware>();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-               app.UseSwaggerMiddleware();
+                app.UseSwaggerMiddleware();
             }
             //only one request on network => better to front ends
             app.UseStatusCodePagesWithReExecute("/Errors/{0}");
@@ -72,7 +74,8 @@ namespace Talabat.APIS
             app.UseAuthorization();
 
             app.UseStaticFiles();
-            app.MapControllers();
+            app.MapControllers(); 
+            #endregion
 
             app.Run();
         }

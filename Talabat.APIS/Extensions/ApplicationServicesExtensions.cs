@@ -30,13 +30,11 @@ namespace Talabat.APIS.Extensions
             });
             return services;
 
-        }
-        
+        }        
         public static WebApplication UseSwaggerMiddleware(this WebApplication app)
         {          
             app.UseSwagger();
-            app.UseSwaggerUI();
-            
+            app.UseSwaggerUI();      
             return app;
         }
     }
