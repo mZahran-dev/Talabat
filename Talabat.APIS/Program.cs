@@ -1,6 +1,10 @@
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Talabat.APIS.Errors;
+using Talabat.APIS.Extensions;
 using Talabat.APIS.Helpers;
+using Talabat.APIS.Middlewares;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Repository.Data;
@@ -13,7 +17,6 @@ namespace Talabat.APIS
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
 
             #region Add dependency injection services to the container.
 
@@ -30,14 +33,15 @@ namespace Talabat.APIS
             //builder.Services.AddScoped<IGenericRepository<ProductBrand>, GenericRepository<ProductBrand>>();
             //builder.Services.AddScoped<IGenericRepository<ProductCategory>, GenericRepository<ProductCategory>>();
 
-            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            builder.Services.AddAutoMapper(typeof(MappingProfile));
+            //ApplicationServicesExtensions.AddApplicationServices(builder.Services);
+            
+            builder.Services.AddApplicationServices(); //Extension Method
             var app = builder.Build();
 
             #endregion
 
-
             // Update DataBase Automatically
+            #region Update Database 
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
             var _dbContext = services.GetRequiredService<StoreContext>();
@@ -52,20 +56,26 @@ namespace Talabat.APIS
                 var logger = loggerFactory.CreateLogger<Program>();
                 logger.LogError(ex, "an error occured during Migration");
             }
+            #endregion
 
+            #region Middlewares
+            app.UseMiddleware<ExceptionMiddleware>();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerMiddleware();
             }
-
+            //only one request on network => better to front ends
+            app.UseStatusCodePagesWithReExecute("/Errors/{0}");
+            // two requests on network
+            app.UseStatusCodePagesWithRedirects("/Errors/{0}");
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
             app.UseStaticFiles();
-            app.MapControllers();
+            app.MapControllers(); 
+            #endregion
 
             app.Run();
         }
