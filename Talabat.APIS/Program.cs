@@ -79,7 +79,10 @@ namespace Talabat.APIS
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            //only one request on network => better to front ends
+            app.UseStatusCodePagesWithReExecute("/Errors/{0}");
+            // two requests on network
+            app.UseStatusCodePagesWithRedirects("/Errors/{0}");
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
