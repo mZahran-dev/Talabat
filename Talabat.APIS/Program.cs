@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Talabat.APIS.Errors;
+using Talabat.APIS.Extensions;
 using Talabat.APIS.Helpers;
 using Talabat.APIS.Middlewares;
 using Talabat.Core.Entities;
@@ -33,25 +34,9 @@ namespace Talabat.APIS
             //builder.Services.AddScoped<IGenericRepository<ProductBrand>, GenericRepository<ProductBrand>>();
             //builder.Services.AddScoped<IGenericRepository<ProductCategory>, GenericRepository<ProductCategory>>();
 
-            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            builder.Services.AddAutoMapper(typeof(MappingProfile));
-            builder.Services.Configure<ApiBehaviorOptions>(
-            options =>
-            {
-                options.InvalidModelStateResponseFactory = (actionContext) =>
-                {
-                    var errors = actionContext.ModelState.Where(P => P.Value.Errors.Count() > 0)
-                                                         .SelectMany(E => E.Value.Errors)
-                                                         .Select(E => E.ErrorMessage)
-                                                         .ToList();
-                    var response = new ApiValidationErrorResponse()
-                    {
-                        Errors = errors
-                    };
-                    return new BadRequestObjectResult(response);
-                };
-            });
-            
+            //ApplicationServicesExtensions.AddApplicationServices(builder.Services);
+            builder.Services.AddApplicationServices(); //Extension Method
+
             var app = builder.Build();
 
             #endregion
@@ -76,8 +61,7 @@ namespace Talabat.APIS
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+               app.UseSwaggerMiddleware();
             }
             //only one request on network => better to front ends
             app.UseStatusCodePagesWithReExecute("/Errors/{0}");

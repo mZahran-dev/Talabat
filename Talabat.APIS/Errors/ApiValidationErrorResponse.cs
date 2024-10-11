@@ -1,9 +1,9 @@
 ﻿namespace Talabat.APIS.Errors
 {
-    public class ApiValidationErrorResponse : ApiResponse
+    public class ApiValidationErroResponse : ApiResponse
     {
         public IEnumerable<string> Errors { get; set; }
-        public ApiValidationErrorResponse() :base(400)
+        public ApiValidationErroResponse() :base(400)
         {
 
         }
