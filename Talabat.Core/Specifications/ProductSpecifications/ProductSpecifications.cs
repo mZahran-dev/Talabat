@@ -5,21 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using Talabat.Core.Entities;
 
-namespace Talabat.Core.Specifications
+namespace Talabat.Core.Specifications.ProductSpecifications
 {
     public class ProductSpecifications : BaseSpecification<Product>
     {
-        public ProductSpecifications(string? sort, int? brandId, int? categoryId) : base(P=>
-        (!brandId.HasValue || P.BrandId == brandId.Value) &&
-        (!categoryId.HasValue ||P.CategoryId == categoryId.Value)
+        public ProductSpecifications(ProductSpecParams spec) : base(P =>
+        (!spec.brandId.HasValue || P.BrandId == spec.brandId.Value) &&
+        (!spec.categoryId.HasValue || P.CategoryId == spec.categoryId.Value)
         )
-        { 
+        {
             Includes.Add(P => P.ProductBrand);
             Includes.Add(P => P.ProductCategory);
 
-            if (!string.IsNullOrEmpty(sort) )
+            if (!string.IsNullOrEmpty(spec.sort))
             {
-                switch (sort) 
+                switch (spec.sort)
                 {
                     case "PriceAsc":
                         AddOrderBy(P => P.Price);
@@ -28,7 +28,7 @@ namespace Talabat.Core.Specifications
                         AddOrderByDesc(P => P.Price);
                         break;
                     default:
-                        AddOrderBy(P => P.Name); 
+                        AddOrderBy(P => P.Name);
                         break;
 
                 }
@@ -37,10 +37,10 @@ namespace Talabat.Core.Specifications
             else
             {
                 AddOrderBy(P => P.Name);
-            } 
+            }
 
         }
-        public ProductSpecifications(int id) : base(p=>p.Id == id)
+        public ProductSpecifications(int id) : base(p => p.Id == id)
         {
             Includes.Add(P => P.ProductBrand);
             Includes.Add(P => P.ProductCategory);

@@ -6,6 +6,7 @@ using Talabat.APIS.Errors;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Specifications;
+using Talabat.Core.Specifications.ProductSpecifications;
 
 namespace Talabat.APIS.Controllers
 {
@@ -26,9 +27,9 @@ namespace Talabat.APIS.Controllers
 
         #region GetAllProducts
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetAll(string? sort, int? brandId, int? categoryId )
+        public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetAll(ProductSpecParams productSpecParams )
         {
-            var spec = new ProductSpecifications(sort,brandId,categoryId);
+            var spec = new ProductSpecifications(productSpecParams);
             var products = await _repository.GetAllSpecAsync(spec);
 
             return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>(products)); // 200
