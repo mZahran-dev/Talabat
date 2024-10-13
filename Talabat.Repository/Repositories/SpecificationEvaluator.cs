@@ -16,7 +16,15 @@ namespace Talabat.Repository.Repositories
             var query = sequence; //_dbContext.Set<Product>()
             if(spec.Criteria is not null)
             {
-                query = query.Where(spec.Criteria);
+                query = query.Where(spec.Criteria);            
+            }
+            if (spec.OrderBy is not null)
+            {
+                query = query.OrderBy(spec.OrderBy);
+            }
+            else if (spec.OrderBy is not null)
+            {
+                query = query.OrderByDescending(spec.OrderBy);
             }
             query = spec.Includes.Aggregate(query, (currentQuery, includeExp) => currentQuery.Include(includeExp));
             return query;

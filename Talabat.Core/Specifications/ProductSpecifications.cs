@@ -9,10 +9,33 @@ namespace Talabat.Core.Specifications
 {
     public class ProductSpecifications : BaseSpecification<Product>
     {
-        public ProductSpecifications() : base()
+        public ProductSpecifications(string sort) : base()
         { 
             Includes.Add(P => P.ProductBrand);
             Includes.Add(P => P.ProductCategory);
+
+            if (!string.IsNullOrEmpty(sort) )
+            {
+                switch (sort) 
+                {
+                    case "PriceAsc":
+                        AddOrderBy(P => P.Price);
+                        break;
+                    case "PriceDesc":
+                        AddOrderByDesc(P => P.Price);
+                        break;
+                    default:
+                        AddOrderBy(P => P.Name); 
+                        break;
+
+                }
+
+            }
+            else
+            {
+                AddOrderBy(P => P.Name);
+            } 
+
         }
         public ProductSpecifications(int id) : base(p=>p.Id == id)
         {
