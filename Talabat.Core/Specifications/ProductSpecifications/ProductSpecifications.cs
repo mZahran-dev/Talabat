@@ -39,6 +39,13 @@ namespace Talabat.Core.Specifications.ProductSpecifications
                 AddOrderBy(P => P.Name);
             }
 
+
+            //total Products = 10
+            // PageSize = 5
+            // PageIndex = 5
+            ApplyPagination((spec.PageIndex - 1) * spec.PageSize , spec.PageSize);
+
+
         }
         public ProductSpecifications(int id) : base(p => p.Id == id)
         {

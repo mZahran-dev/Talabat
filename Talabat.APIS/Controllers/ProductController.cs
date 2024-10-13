@@ -27,7 +27,7 @@ namespace Talabat.APIS.Controllers
 
         #region GetAllProducts
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetAll(ProductSpecParams productSpecParams )
+        public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetAll([FromQuery]ProductSpecParams productSpecParams )
         {
             var spec = new ProductSpecifications(productSpecParams);
             var products = await _repository.GetAllSpecAsync(spec);
