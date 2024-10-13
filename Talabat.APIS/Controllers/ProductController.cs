@@ -26,12 +26,12 @@ namespace Talabat.APIS.Controllers
 
         #region GetAllProducts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
+        public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetAll()
         {
             var spec = new ProductSpecifications();
             var products = await _repository.GetAllSpecAsync(spec);
 
-            return Ok(_mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(products)); // 200
+            return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>(products)); // 200
         } 
         #endregion
 
@@ -55,7 +55,7 @@ namespace Talabat.APIS.Controllers
 
         #region GetAllBrand
         [HttpGet("brands")]
-        public async Task<ActionResult<IEnumerable<ProductBrand>>> GetAllBrands()
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetAllBrands()
         {
             var brands = await _brandRepo.GetAllAsync();
             return Ok(brands);
@@ -64,7 +64,7 @@ namespace Talabat.APIS.Controllers
 
         #region GetAllCategories
         [HttpGet("categories")]
-        public async Task<ActionResult<IEnumerable<ProductBrand>>> GetAllCategories()
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetAllCategories()
         {
             var categories = await _categoryRepo.GetAllAsync();
             return Ok(categories);
