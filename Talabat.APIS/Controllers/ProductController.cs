@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Talabat.APIS.DTOs;
 using Talabat.APIS.Errors;
+using Talabat.APIS.Helpers;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Specifications;
+using Talabat.Core.Specifications.ProductSpecifications;
 
 namespace Talabat.APIS.Controllers
 {
@@ -26,12 +28,16 @@ namespace Talabat.APIS.Controllers
 
         #region GetAllProducts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
+        public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetAll([FromQuery]ProductSpecParams productSpecParams )
         {
-            var spec = new ProductSpecifications();
+            var spec = new ProductSpecifications(productSpecParams);
+            var countSpec = new ProductWithFilterationForCountSpec(productSpecParams);
             var products = await _repository.GetAllSpecAsync(spec);
+            var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>(products);
 
-            return Ok(_mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(products)); // 200
+            var count = await _repository.GetCountAsync(countSpec);
+            
+            return Ok(new Pagination<ProductDto>(productSpecParams.PageSize , productSpecParams.PageIndex,count , data)); // 200
         } 
         #endregion
 
@@ -55,7 +61,7 @@ namespace Talabat.APIS.Controllers
 
         #region GetAllBrand
         [HttpGet("brands")]
-        public async Task<ActionResult<IEnumerable<ProductBrand>>> GetAllBrands()
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetAllBrands()
         {
             var brands = await _brandRepo.GetAllAsync();
             return Ok(brands);
@@ -64,7 +70,7 @@ namespace Talabat.APIS.Controllers
 
         #region GetAllCategories
         [HttpGet("categories")]
-        public async Task<ActionResult<IEnumerable<ProductBrand>>> GetAllCategories()
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetAllCategories()
         {
             var categories = await _categoryRepo.GetAllAsync();
             return Ok(categories);

@@ -20,7 +20,7 @@ namespace Talabat.Repository.Repositories
         {
             _dbcontext = Dbcontext;
         }
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IReadOnlyList<T>> GetAllAsync()
         {
             // to solve this issue of condition => implement Specification design pattern
             //if (typeof(T) == typeof(Product))
@@ -42,11 +42,11 @@ namespace Talabat.Repository.Repositories
         }
 
         //Get With specification
-        public async Task<IEnumerable<T>> GetAllSpecAsync(ISpecification<T> spec)
+        public async Task<IReadOnlyList<T>> GetAllSpecAsync(ISpecification<T> spec)
         {
             return await ApplySpecification(spec).ToListAsync();
         }
-        async Task<T> IGenericRepository<T>.GetByIdSpecAsync(ISpecification<T> spec)
+        public async Task<T> GetByIdSpecAsync(ISpecification<T> spec)
         {
             return await ApplySpecification(spec).FirstOrDefaultAsync();
         }
@@ -54,6 +54,11 @@ namespace Talabat.Repository.Repositories
         private IQueryable<T> ApplySpecification(ISpecification<T> spec)
         {
             return SpecificationEvaluator<T>.GetQuery(_dbcontext.Set<T>(), spec);
+        }
+
+        public async Task<int> GetCountAsync(ISpecification<T> spec)
+        {
+            return await ApplySpecification(spec).CountAsync();
         }
     }
 }
