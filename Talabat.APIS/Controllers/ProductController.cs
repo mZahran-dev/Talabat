@@ -31,10 +31,10 @@ namespace Talabat.APIS.Controllers
         public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetAll([FromQuery]ProductSpecParams productSpecParams )
         {
             var spec = new ProductSpecifications(productSpecParams);
+            var countSpec = new ProductWithFilterationForCountSpec(productSpecParams);
             var products = await _repository.GetAllSpecAsync(spec);
             var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>(products);
 
-            var countSpec = new ProductWithFilterationForCountSpec(productSpecParams);
             var count = await _repository.GetCountAsync(countSpec);
             
             return Ok(new Pagination<ProductDto>(productSpecParams.PageSize , productSpecParams.PageIndex,count , data)); // 200
