@@ -1,6 +1,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 using Talabat.APIS.Errors;
 using Talabat.APIS.Extensions;
 using Talabat.APIS.Helpers;
@@ -34,7 +35,12 @@ namespace Talabat.APIS
             //builder.Services.AddScoped<IGenericRepository<ProductCategory>, GenericRepository<ProductCategory>>();
 
             //ApplicationServicesExtensions.AddApplicationServices(builder.Services);
-            
+            builder.Services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
+            {
+                var connection = builder.Configuration.GetConnectionString("RedisConnection");    
+                return ConnectionMultiplexer.Connect(connection);
+            }
+            );
             builder.Services.AddApplicationServices(); //Extension Method
             var app = builder.Build();
 
