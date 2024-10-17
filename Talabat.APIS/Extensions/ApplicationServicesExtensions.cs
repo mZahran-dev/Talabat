@@ -28,6 +28,7 @@ namespace Talabat.APIS.Extensions
                     return new BadRequestObjectResult(response);
                 };
             });
+            services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
             return services;
 
         }        

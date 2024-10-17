@@ -13,11 +13,13 @@ namespace Talabat.Repository.Repositories
 {
     public class BasketRepository : IBasketRepository
     {
-       private readonly StackExchange.Redis.IDatabase _database;
-       public BasketRepository(IConnectionMultiplexer connection)
-       {
+        #region Constructor
+        private readonly StackExchange.Redis.IDatabase _database;
+        public BasketRepository(IConnectionMultiplexer connection)
+        {
             _database = connection.GetDatabase();
-       }
+        } 
+        #endregion
         public async Task<bool> DeleteBasketAsync(string BasketId)
         {
            return await _database.KeyDeleteAsync(BasketId); 
