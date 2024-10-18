@@ -8,10 +8,16 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.20" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.16" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Talabat.Core\Talabat.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Identity\Configurations\" />
+    <Folder Include="Data\Identity\DataSeeding\" />
   </ItemGroup>
 
 </Project>
