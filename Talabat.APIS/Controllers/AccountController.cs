@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Talabat.APIS.DTOs;
+using Talabat.APIS.Errors;
 using Talabat.Core.Entities.Identity;
 
 namespace Talabat.APIS.Controllers
@@ -18,10 +19,19 @@ namespace Talabat.APIS.Controllers
         }
 
         [HttpPost("login")]
-        //public async Task<ActionResult<UserDto>> Login(LoginDto)
-        //{
-
-        //}
+        public async Task<ActionResult<UserDto>> Login(LoginDto model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null) return Unauthorized(new ApiResponse(401));
+            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+            if(result.Succeeded) return Unauthorized(new ApiResponse(401));
+            return Ok(new UserDto()
+            {
+                DisplayName = user.DisplayName,
+                Email = model.Email,
+                Token = "this will be token"
+            });
+        }
 
 
 
