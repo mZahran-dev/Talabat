@@ -9,6 +9,7 @@ using Talabat.APIS.Middlewares;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Repository.Data;
+using Talabat.Repository.Data.Identity;
 using Talabat.Repository.Repositories;
 
 namespace Talabat.APIS
@@ -27,6 +28,11 @@ namespace Talabat.APIS
             builder.Services.AddDbContext<StoreContext>
             (
              options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+            );
+
+            builder.Services.AddDbContext<AppIdentityDbContext>
+            (
+             options => options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"))
             );
             builder.Services.AddSwaggerGen();
 
