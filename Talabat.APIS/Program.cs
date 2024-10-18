@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
@@ -7,6 +8,7 @@ using Talabat.APIS.Extensions;
 using Talabat.APIS.Helpers;
 using Talabat.APIS.Middlewares;
 using Talabat.Core.Entities;
+using Talabat.Core.Entities.Identity;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Repository.Data;
 using Talabat.Repository.Data.Identity;
@@ -48,6 +50,14 @@ namespace Talabat.APIS
             }
             );
             builder.Services.AddApplicationServices(); //Extension Method
+
+            builder.Services.AddIdentity<AppUser, IdentityRole>(
+                options =>
+                {
+                    //options.Password.RequiredUniqueChars = 2;
+                }).AddEntityFrameworkStores<AppIdentityDbContext>();
+
+
             var app = builder.Build();
 
             #endregion
@@ -56,12 +66,18 @@ namespace Talabat.APIS
             #region Update Database 
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
+
             var _dbContext = services.GetRequiredService<StoreContext>();
+            var _identityDbContext = services.GetRequiredService<AppIdentityDbContext>();
+            var _userManager = services.GetRequiredService<UserManager<AppUser>>();
+
             var loggerFactory = services.GetRequiredService<ILoggerFactory>();
             try
             {
                 await _dbContext.Database.MigrateAsync();
                 await StoreContextSeed.SeedAsync(_dbContext);
+                await _identityDbContext.Database.MigrateAsync();
+                await AppIdentityDbContextSeed.SeedUserAsync(_userManager);
             }
             catch (Exception ex)
             {
