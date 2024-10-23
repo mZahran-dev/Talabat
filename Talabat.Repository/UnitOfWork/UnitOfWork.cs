@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,11 +16,12 @@ namespace Talabat.Repository.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private readonly StoreContext _dbContext;
-        private Dictionary<string, GenericRepository<BaseEntity>> _repositories;
+        //private Dictionary<string, GenericRepository<BaseEntity>> _repositories;
+        private Hashtable _repositories;
         public UnitOfWork(StoreContext dbContext)
         {
             _dbContext = dbContext;
-            _repositories = new Dictionary<string, GenericRepository<BaseEntity>>();
+            _repositories = new Hashtable();
         }
 
         public async Task<int> CompleteAsync()
@@ -37,7 +39,7 @@ namespace Talabat.Repository.UnitOfWork
             var key = typeof(TEntity).Name;
             if (!_repositories.ContainsKey(key))
             {
-                var repository = new GenericRepository<TEntity>(_dbContext) as GenericRepository<BaseEntity>;
+                var repository = new GenericRepository<TEntity>(_dbContext); 
                 _repositories.Add(key, repository);
             }
             return _repositories[key] as IGenericRepository<TEntity>;

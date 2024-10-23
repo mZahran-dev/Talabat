@@ -13,12 +13,12 @@ namespace Talabat.APIS.Controllers
 {
     public class ProductController : APIBaseController
     {
-        private readonly GenericRepository<Product> _repository;
-        private readonly GenericRepository<ProductBrand> _brandRepo;
-        private readonly GenericRepository<ProductCategory> _categoryRepo;
+        private readonly IGenericRepository<Product> _repository;
+        private readonly IGenericRepository<ProductBrand> _brandRepo;
+        private readonly IGenericRepository<ProductCategory> _categoryRepo;
         private readonly IMapper _mapper;
 
-        public ProductController(GenericRepository<Product> ProductRepo, GenericRepository<ProductBrand> BrandRepo, GenericRepository<ProductCategory> CategoryRepo, IMapper mapper)
+        public ProductController(IGenericRepository<Product> ProductRepo, IGenericRepository<ProductBrand> BrandRepo, IGenericRepository<ProductCategory> CategoryRepo, IMapper mapper)
         {
            _repository = ProductRepo;
            _brandRepo = BrandRepo;

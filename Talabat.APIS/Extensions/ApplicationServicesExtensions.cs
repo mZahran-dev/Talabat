@@ -2,9 +2,11 @@
 using Talabat.APIS.Errors;
 using Talabat.APIS.Helpers;
 using Talabat.Core.Repositories.Contract;
+using Talabat.Core.Services.Contract;
 using Talabat.Core.UnitOfWork.Contract;
 using Talabat.Repository.Repositories;
 using Talabat.Repository.UnitOfWork;
+using Talabat.Service;
 
 namespace Talabat.APIS.Extensions
 {
@@ -12,6 +14,7 @@ namespace Talabat.APIS.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped(typeof(IOrderService), typeof(OrderService));
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             //services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             
