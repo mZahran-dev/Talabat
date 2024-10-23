@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Talabat.Core.Entities;
 
 namespace Talabat.Core.Order_Aggregate
 {
-    public class OrderItem
+    public class OrderItem : BaseEntity
     {
         public OrderItem(ProductItemOrder product, decimal price, int quantity)
         {

@@ -18,7 +18,7 @@ namespace Talabat.Core.Order_Aggregate
             Items = items;
             SubTotal = subTotal;
         }
-
+        public Order() { }
         public string BuyerEmail { get; set; }
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.UtcNow;
         public OrderStatus Status { get; set; }

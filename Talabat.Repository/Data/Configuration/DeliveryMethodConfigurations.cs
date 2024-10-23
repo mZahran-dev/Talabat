@@ -14,6 +14,7 @@ namespace Talabat.Repository.Data.Configuration
         public void Configure(EntityTypeBuilder<DeliveryMethod> builder)
         {
             builder.Property(D => D.Cost).HasColumnType("decimal(18,2)");
+            
         }
     }
 }
