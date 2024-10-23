@@ -41,7 +41,7 @@ namespace Talabat.Service
                 foreach(var item in basket.Items)
                 {
                     // product from Database
-                    var product = await _unitOfWork.ProductRepo.GetAsync(item.Id);
+                    var product = await _unitOfWork.Repository<Product>().GetAsync(item.Id);
                     var ProductItemOrder = new ProductItemOrder(item.Id, product.Name, product.PictureUrl);
                     var OrderItem = new OrderItem(ProductItemOrder, product.Price, item.Quantity);
 
@@ -54,16 +54,17 @@ namespace Talabat.Service
             var supTotal = orderItems.Sum(orderItem => orderItem.Price * orderItem.Quantity);
 
             // 4. Get Delivery Method From DeliveryMethod Repo
-            var deliveryMethod = await _unitOfWork.DeliveryMethodRepo.GetAsync(deliveryMethodId);
+            var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetAsync(deliveryMethodId);
 
             // 5. Create Order
             var order = new Order(buyerEmail, shippingAddress, deliveryMethod, orderItems, supTotal);
-            await _orderRepo.AddAsync(order); 
+            await _unitOfWork.Repository<Order>().AddAsync(order);
 
             // 6. Save To Database ......
-
+            var result = await _unitOfWork.CompleteAsync();
+            if (result <= 0) return null;
             
-
+            return order;
 
 
 

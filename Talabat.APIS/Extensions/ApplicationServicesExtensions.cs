@@ -2,7 +2,9 @@
 using Talabat.APIS.Errors;
 using Talabat.APIS.Helpers;
 using Talabat.Core.Repositories.Contract;
+using Talabat.Core.UnitOfWork.Contract;
 using Talabat.Repository.Repositories;
+using Talabat.Repository.UnitOfWork;
 
 namespace Talabat.APIS.Extensions
 {
@@ -10,8 +12,11 @@ namespace Talabat.APIS.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped(typeof(Core.Repositories.Contract.GenericRepository<>), typeof(Repository.Repositories.GenericRepository<>));
+            services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+            //services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            
             services.AddAutoMapper(typeof(MappingProfile));
+            
             services.Configure<ApiBehaviorOptions>(
             options =>
             {
@@ -28,6 +33,7 @@ namespace Talabat.APIS.Extensions
                     return new BadRequestObjectResult(response);
                 };
             });
+
             services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
             return services;
 
