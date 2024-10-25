@@ -19,6 +19,8 @@ namespace Talabat.APIS.Controllers
             _orderService = orderService;
             _mapper = mapper;
         }
+
+
         [ProducesResponseType(typeof(Order),StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [HttpPost]
@@ -27,6 +29,13 @@ namespace Talabat.APIS.Controllers
             var address = _mapper.Map<AddressDto, Address>(orderDto.shippingAddress);
             var order = await _orderService.CreateOrderAsync(orderDto.BuyerEmail, orderDto.BasketId, orderDto.DeliveryMethodId, address);
             if (order is null) return BadRequest(new ApiResponse(400));
+            return Ok(order);
+         }
+
+        [HttpGet] 
+        public async Task<ActionResult<List<Order>>> GetOrdersForUsers(string UserEmail)
+        {
+            var order = await _orderService.GetOrdersForUsersAsync(UserEmail);
             return Ok(order);
         }
 
