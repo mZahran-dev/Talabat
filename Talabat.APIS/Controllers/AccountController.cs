@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using Microsoft.VisualBasic;
+using System.Security.Claims;
 using Talabat.APIS.DTOs;
 using Talabat.APIS.Errors;
 using Talabat.Core.Entities.Identity;
@@ -57,6 +61,21 @@ namespace Talabat.APIS.Controllers
                 Token = await _authService.CreateTokenAsync(user, _userManager)
             });
         }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet]
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
+            var user = await _userManager.FindByEmailAsync(email);
+            return Ok(new UserDto()
+            {
+                DisplayName = user.DisplayName ?? string.Empty,
+                Email = user.Email ?? string.Empty,
+                Token = await _authService.CreateTokenAsync(user, _userManager)
+            }); 
+        }
+
 
     }
 }
