@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using StackExchange.Redis;
+using System.Text;
 using Talabat.APIS.Errors;
 using Talabat.APIS.Extensions;
 using Talabat.APIS.Helpers;
@@ -24,7 +27,10 @@ namespace Talabat.APIS
 
             #region Add dependency injection services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddDbContext<StoreContext>
@@ -57,6 +63,22 @@ namespace Talabat.APIS
                     //options.Password.RequiredUniqueChars = 2;
                 }).AddEntityFrameworkStores<AppIdentityDbContext>();
 
+            #region Auth Handler Register
+            builder.Services.AddAuthentication().AddJwtBearer("Bearer", opitons =>
+               {
+                   opitons.TokenValidationParameters = new TokenValidationParameters()
+                   {
+                       ValidateIssuer = true,
+                       ValidIssuer = builder.Configuration["JWT:ValidIssure"],
+                       ValidateAudience = true,
+                       ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                       ValidateLifetime = true,
+                       ClockSkew = TimeSpan.Zero,
+                       ValidateIssuerSigningKey = true,
+                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:AuthKey"] ?? string.Empty)),
+                   };
+               }); 
+            #endregion
 
             var app = builder.Build();
 

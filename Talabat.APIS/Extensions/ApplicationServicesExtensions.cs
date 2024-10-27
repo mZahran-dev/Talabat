@@ -14,6 +14,7 @@ namespace Talabat.APIS.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped(typeof(IAuthService), typeof(AuthService));
             services.AddScoped(typeof(IOrderService), typeof(OrderService));
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             //services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
