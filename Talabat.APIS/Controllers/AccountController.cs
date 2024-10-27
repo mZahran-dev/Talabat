@@ -104,5 +104,7 @@ namespace Talabat.APIS.Controllers
             if (!result.Succeeded) return BadRequest(new ApiResponse(400));
             return Ok(result);
         }
+
+        public 
     }
 }
